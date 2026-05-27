@@ -1,0 +1,23 @@
+# Build directories
+build/
+Debug/
+Release/
+x64/
+*.exe
+*.pdb
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+*.sln
+*.vcxproj*
+*.dir/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
