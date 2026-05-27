@@ -1,0 +1,11 @@
+FROM nginx:latest
+
+# Устанавливаем docker cli для получения логов
+RUN apt-get update && apt-get install -y docker.io curl && rm -rf /var/lib/apt/lists/*
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+ENTRYPOINT ["/entrypoint.sh"]
