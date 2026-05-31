@@ -17,4 +17,4 @@ RUN mkdir build && cd build && \
     cmake --build . --config Release
 
 # Запускаем тесты
-CMD ["./build/Release/testproj.exe"]
+CMD ["./build/testproj"]
