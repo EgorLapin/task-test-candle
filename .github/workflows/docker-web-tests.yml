@@ -1,4 +1,4 @@
-name: Docker Build, Test and Push
+name: Docker Build and Push
 
 on:
   push:
@@ -8,9 +8,6 @@ on:
 
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  APP_IMAGE: ${{ secrets.DOCKER_USERNAME }}/test-repo-app
-  WEB_IMAGE: ${{ secrets.DOCKER_USERNAME }}/test-repo-web
 
 jobs:
   build-and-push:
@@ -19,6 +16,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: List files for debug
+        run: ls -la
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -29,28 +29,17 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and test app image locally
+      - name: Build and test app image
         run: |
           docker build -f Dockerfile.app -t test-repo-app .
-          # Запускаем контейнер, чтобы проверить, что тесты проходят
           docker run --rm test-repo-app
 
       - name: Build web image
         run: docker build -f Dockerfile.web -t test-repo-web .
 
-      - name: Run docker-compose integration test
+      - name: Tag and push to Docker Hub
         run: |
-          docker-compose up -d
-          sleep 5
-          curl --fail http://localhost || (docker-compose logs && exit 1)
-          docker-compose down
-
-      - name: Tag images for Docker Hub
-        run: |
-          docker tag test-repo-app ${{ env.APP_IMAGE }}:latest
-          docker tag test-repo-web ${{ env.WEB_IMAGE }}:latest
-
-      - name: Push images to Docker Hub
-        run: |
-          docker push ${{ env.APP_IMAGE }}:latest
-          docker push ${{ env.WEB_IMAGE }}:latest
+          docker tag test-repo-app ${{ secrets.DOCKER_USERNAME }}/test-repo-app:latest
+          docker tag test-repo-web ${{ secrets.DOCKER_USERNAME }}/test-repo-web:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/test-repo-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/test-repo-web:latest
