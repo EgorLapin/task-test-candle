@@ -1,0 +1,14 @@
+.git
+.gitignore
+build/
+Debug/
+Release/
+*.exe
+*.pdb
+CMakeCache.txt
+CMakeFiles/
+*.sln
+*.vcxproj*
+.vscode/
+.idea/
+*.tar
