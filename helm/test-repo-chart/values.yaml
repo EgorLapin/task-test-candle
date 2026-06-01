@@ -1,0 +1,11 @@
+app:
+  image: egor2640/test-repo-app:latest
+  pullPolicy: Always
+
+web:
+  image: egor2640/test-repo-web:latest
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 80

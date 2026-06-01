@@ -1,7 +1,6 @@
 #!/bin/sh
 
 echo "Waiting for app pod to be ready..."
-# Ждём, пока под с меткой app=app не появится и не будет в статусе Running
 while true; do
   APP_POD=$(kubectl get pods -l app=app -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
   if [ -n "$APP_POD" ]; then
@@ -11,6 +10,15 @@ while true; do
 done
 
 echo "Fetching logs from pod $APP_POD"
-kubectl logs $APP_POD > /usr/share/nginx/html/index.html 2>&1 || echo "No logs available" > /usr/share/nginx/html/index.html
+# Ждём, пока логи не появятся
+while true; do
+  LOGS=$(kubectl logs $APP_POD 2>/dev/null)
+  if [ -n "$LOGS" ]; then
+    echo "$LOGS" > /usr/share/nginx/html/index.html
+    echo "Logs saved successfully"
+    break
+  fi
+  sleep 2
+done
 
 nginx -g 'daemon off;'
