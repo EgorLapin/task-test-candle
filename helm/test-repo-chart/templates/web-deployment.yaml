@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      serviceAccountName: {{ .Release.Name }}-web-log-reader
+      containers:
+      - name: web
+        image: {{ .Values.web.image }}
+        imagePullPolicy: {{ .Values.web.pullPolicy }}
+        ports:
+        - containerPort: 80

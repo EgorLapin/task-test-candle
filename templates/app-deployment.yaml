@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-app
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-app
+    spec:
+      containers:
+      - name: app
+        image: {{ .Values.app.image }}
+        imagePullPolicy: {{ .Values.app.pullPolicy }}
+        workingDir: /app
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            set -e
+            ./build/testproj || true
+            echo "Tests done, keeping container alive"
+            tail -f /dev/null
