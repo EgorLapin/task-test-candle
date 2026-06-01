@@ -12,3 +12,5 @@ CMakeFiles/
 .vscode/
 .idea/
 *.tar
+k8s/
+helm/

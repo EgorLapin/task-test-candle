@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      serviceAccountName: web-log-reader
+      containers:
+      - name: web
+        image: egor2640/test-repo-web:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80

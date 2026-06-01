@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: egor2640/test-repo-app:latest
+        imagePullPolicy: Always
+        workingDir: /app
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            set -e
+            ./build/testproj || true
+            echo "Tests done, keeping container alive"
+            tail -f /dev/null
