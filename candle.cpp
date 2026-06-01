@@ -4,16 +4,18 @@
 #include <stdexcept>
 
 Candle::Candle(Price _open, Price _high, Price _low, Price _close)
-	: open(_open)
-	, high(_high)
-	, low(_low)
-	, close(_close)
+	: open(_open), high(_high), low(_low), close(_close)
 {
+}
+
+bool Candle::is_doji() const
+{
+	return open == close;
 }
 
 bool Candle::body_contains(const Price &price) const noexcept
 {
-	if(is_green())
+	if (is_green())
 	{
 		const Price &max = close;
 		const Price &min = open;

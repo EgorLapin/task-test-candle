@@ -1,185 +1,148 @@
-﻿#include <vector>
-#include <functional>
-#include <iostream>
-#include <cassert>
-
+﻿#include <gtest/gtest.h>
 #include "candle.h"
 
 // 2.1 body_contains
-bool test_body_contains_1()
+TEST(CandleTest, BodyContainsGreen)
 {
-  Candle c(100.0, 110.0, 90.0, 105.0); // green
-  return c.body_contains(102.0) &&
-         !c.body_contains(99.0) &&
-         c.body_contains(100.0) &&
-         c.body_contains(105.0);
+  Candle c(100.0, 110.0, 90.0, 105.0);
+  EXPECT_TRUE(c.body_contains(102.0));
+  EXPECT_TRUE(c.body_contains(100.0));
+  EXPECT_TRUE(c.body_contains(105.0));
+  EXPECT_FALSE(c.body_contains(99.0));
 }
 
-bool test_body_contains_2()
+TEST(CandleTest, BodyContainsRed)
 {
-  Candle c(105.0, 110.0, 90.0, 100.0); // red
-  return c.body_contains(102.0) &&
-         !c.body_contains(106.0) &&
-         c.body_contains(105.0) &&
-         c.body_contains(100.0);
+  Candle c(105.0, 110.0, 90.0, 100.0);
+  EXPECT_TRUE(c.body_contains(102.0));
+  EXPECT_TRUE(c.body_contains(105.0));
+  EXPECT_FALSE(c.body_contains(106.0));
 }
 
-bool test_body_contains_3()
+TEST(CandleTest, BodyContainsDoji)
 {
-  Candle c(100.0, 100.0, 100.0, 100.0); // doji
-  return c.body_contains(100.0) && !c.body_contains(100.1);
+  Candle c(100.0, 100.0, 100.0, 100.0);
+  EXPECT_TRUE(c.body_contains(100.0));
+  EXPECT_FALSE(c.body_contains(100.1));
 }
 
 // 2.2 contains
-bool test_contains_1()
+TEST(CandleTest, ContainsGreen)
 {
   Candle c(100.0, 110.0, 90.0, 105.0);
-  return c.contains(95.0) && c.contains(105.0) &&
-         c.contains(100.0) && !c.contains(89.9);
+  EXPECT_TRUE(c.contains(95.0));
+  EXPECT_TRUE(c.contains(105.0));
+  EXPECT_FALSE(c.contains(89.9));
 }
 
-bool test_contains_2()
+TEST(CandleTest, ContainsRed)
 {
   Candle c(105.0, 110.0, 90.0, 100.0);
-  return c.contains(90.0) && c.contains(110.0) && !c.contains(111.0);
+  EXPECT_TRUE(c.contains(90.0));
+  EXPECT_TRUE(c.contains(110.0));
+  EXPECT_FALSE(c.contains(111.0));
 }
 
-bool test_contains_3()
+TEST(CandleTest, ContainsDoji)
 {
   Candle c(100.0, 100.0, 100.0, 100.0);
-  return c.contains(100.0) && !c.contains(99.9);
+  EXPECT_TRUE(c.contains(100.0));
+  EXPECT_FALSE(c.contains(99.9));
 }
 
 // 2.3 full_size
-bool test_full_size_1()
+TEST(CandleTest, FullSizeGreen)
 {
   Candle c(100.0, 110.0, 90.0, 105.0);
-  return std::abs(c.full_size() - 20.0) < 1e-9;
+  EXPECT_DOUBLE_EQ(c.full_size(), 20.0);
 }
 
-bool test_full_size_2()
+TEST(CandleTest, FullSizeRed)
 {
   Candle c(105.0, 110.0, 90.0, 100.0);
-  return std::abs(c.full_size() - 20.0) < 1e-9;
+  EXPECT_DOUBLE_EQ(c.full_size(), 20.0);
 }
 
-bool test_full_size_3()
+TEST(CandleTest, FullSizeDoji)
 {
   Candle c(100.0, 100.0, 100.0, 100.0);
-  return c.full_size() == 0.0;
+  EXPECT_DOUBLE_EQ(c.full_size(), 0.0);
 }
 
 // 2.4 body_size
-bool test_body_size_1()
+TEST(CandleTest, BodySizeGreen)
 {
-  Candle c(100.0, 110.0, 90.0, 105.0); // green
-  return std::abs(c.body_size() - 5.0) < 1e-9;
+  Candle c(100.0, 110.0, 90.0, 105.0);
+  EXPECT_DOUBLE_EQ(c.body_size(), 5.0);
 }
 
-bool test_body_size_2()
+TEST(CandleTest, BodySizeRed)
 {
-  Candle c(105.0, 110.0, 90.0, 100.0); // red
-  return std::abs(c.body_size() - 5.0) < 1e-9;
+  Candle c(105.0, 110.0, 90.0, 100.0);
+  EXPECT_DOUBLE_EQ(c.body_size(), 5.0);
 }
 
-bool test_body_size_3()
+TEST(CandleTest, BodySizeDoji)
 {
   Candle c(100.0, 100.0, 100.0, 100.0);
-  return c.body_size() == 0.0;
+  EXPECT_DOUBLE_EQ(c.body_size(), 0.0);
 }
 
 // 2.5 is_red
-bool test_is_red_1()
+TEST(CandleTest, IsRedTrue)
 {
   Candle c(105.0, 110.0, 90.0, 100.0);
-  return c.is_red() && !c.is_green();
+  EXPECT_TRUE(c.is_red());
+  EXPECT_FALSE(c.is_green());
 }
 
-bool test_is_red_2()
+TEST(CandleTest, IsRedFalse)
 {
   Candle c(100.0, 110.0, 90.0, 105.0);
-  return !c.is_red();
+  EXPECT_FALSE(c.is_red());
 }
 
-bool test_is_red_3()
+TEST(CandleTest, IsRedDoji)
 {
   Candle c(100.0, 100.0, 100.0, 100.0);
-  return !c.is_red();
+  EXPECT_FALSE(c.is_red());
 }
 
 // 2.6 is_green
-bool test_is_green_1()
+TEST(CandleTest, IsGreenTrue)
 {
   Candle c(100.0, 110.0, 90.0, 105.0);
-  return c.is_green() && !c.is_red();
+  EXPECT_TRUE(c.is_green());
+  EXPECT_FALSE(c.is_red());
 }
 
-bool test_is_green_2()
+TEST(CandleTest, IsGreenFalse)
 {
   Candle c(105.0, 110.0, 90.0, 100.0);
-  return !c.is_green();
+  EXPECT_FALSE(c.is_green());
 }
 
-bool test_is_green_3()
+TEST(CandleTest, IsGreenDoji)
 {
   Candle c(100.0, 100.0, 100.0, 100.0);
-  return !c.is_green();
+  EXPECT_FALSE(c.is_green());
 }
 
-static std::vector<std::function<bool()>> tests;
-
-void initTests()
+// Новые тесты для is_doji()
+TEST(CandleTest, IsDojiTrue)
 {
-  // 2.1
-  tests.push_back(test_body_contains_1);
-  tests.push_back(test_body_contains_2);
-  tests.push_back(test_body_contains_3);
-  // 2.2
-  tests.push_back(test_contains_1);
-  tests.push_back(test_contains_2);
-  tests.push_back(test_contains_3);
-  // 2.3
-  tests.push_back(test_full_size_1);
-  tests.push_back(test_full_size_2);
-  tests.push_back(test_full_size_3);
-  // 2.4
-  tests.push_back(test_body_size_1);
-  tests.push_back(test_body_size_2);
-  tests.push_back(test_body_size_3);
-  // 2.5
-  tests.push_back(test_is_red_1);
-  tests.push_back(test_is_red_2);
-  tests.push_back(test_is_red_3);
-  // 2.6
-  tests.push_back(test_is_green_1);
-  tests.push_back(test_is_green_2);
-  tests.push_back(test_is_green_3);
+  Candle c(100.0, 110.0, 90.0, 100.0); // open == close → это доджи
+  EXPECT_TRUE(c.is_doji());
 }
 
-int launchTests()
+TEST(CandleTest, IsDojiFalse)
 {
-  int total = 0, passed = 0;
-  for (const auto &test : tests)
-  {
-    std::cout << "test #" << (total + 1);
-    if (test())
-    {
-      passed++;
-      std::cout << " passed\n";
-    }
-    else
-    {
-      std::cout << " failed\n";
-    }
-    total++;
-  }
-  std::cout << "\n"
-            << passed << "/" << total << " tests passed!\n";
-  return total - passed;
+  Candle c(100.0, 110.0, 90.0, 105.0); // open != close → не доджи
+  EXPECT_FALSE(c.is_doji());
 }
 
-int main()
+int main(int argc, char **argv)
 {
-  initTests();
-  return launchTests();
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
